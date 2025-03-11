@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trip Tickets</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js"></script>
+    <title>Approval</title>
+    <link rel="stylesheet" href="/styles.css">
+    
 </head>
 <body>
 
     <div class="container">
-        <h1>TRIP TICKETS</h1>
+        <h1>APPROVAL</h1>
         <div class="nav-buttons">
-            <button class="btn" onclick="redirect('approval.html')">Approval</button>
+            <button class="btn disabled">Approval</button>
             <button class="btn" onclick="redirect('purchase_orders.html')">Purchase Orders</button>
             <button class="btn" onclick="redirect('material_requests.html')">Material Requests</button>
             <button class="btn" onclick="redirect('fuel_requests.html')">Fuel Requests</button>
-            <button class="btn disabled">Trip Tickets</button>
+            <button class="btn" onclick="redirect('trip_tickets.html')">Trip Tickets</button>
         </div>
-
+        <input class="searchBar" type="text" placeholder="Search...">
         <div class="content">
-            <p>Trip ticket details will be displayed here.</p>
+            <p>Pending approvals will be listed here.</p>
         </div>
     </div>
-
+    <script src="/script.js"></script>
 </body>
 </html>

@@ -29,6 +29,14 @@ h1 {
     margin-bottom: 20px;
 }
 
+.searchBar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
 .btn {
     background-color: #222;
     color: white;
