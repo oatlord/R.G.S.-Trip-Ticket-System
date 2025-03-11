@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Requests</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>MATERIAL REQUESTS</h1>
+
+        <div class="nav-buttons">
+            <button class="btn" onclick="redirect('approval.html')">Approval</button>
+            <button class="btn" onclick="redirect('purchase_orders.html')">Purchase Orders</button>
+            <button class="btn disabled">Material Requests</button>
+            <button class="btn" onclick="redirect('fuel_requests.html')">Fuel Requests</button>
+            <button class="btn" onclick="redirect('trip_tickets.html')">Trip Tickets</button>
+        </div>
+
+        <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Material Request ID</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>000-000-000</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="admin-actions">
+            <button class="btn">Approve Request</button>
+            <button class="btn">Delete Request</button>
+        </div>
+
+    </div>
+
+</body>
+</html>
