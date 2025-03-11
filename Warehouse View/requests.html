@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approval</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>CREATE REQUEST</h1>
+        <div class="nav-buttons">
+            <button class="btn" onclick="redirect('supply.html')">Supply</button>
+            <button class="btn" onclick="redirect('stockout.html')">Stockout</button>
+            <button class="btn disabled" onclick="redirect('requests.html')">Requests</button>
+        </div>
+        <div class="content">
+            <p>Supply content!</p>
+        </div>
+
+        <div class="admin-actions">
+            <button class="btn" onclick="redirect('create_matReq.html')">Create Request</button>
+            <button class="btn disabled">Cancel Request</button>
+        </div>
+    </div>
+    <script src="/script.js"></script>
+</body>
+</html>

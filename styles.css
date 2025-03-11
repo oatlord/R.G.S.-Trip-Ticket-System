@@ -103,6 +103,16 @@ th {
     width: 180px;
 }
 
+/* Warehouse actions (uses the same class as admin actions, these are
+only for the quantity buttons */
+.admin-actions .quantity-buttons {
+    display: flex;
+    flex-direction: row;
+    width: 60px;
+    bottom: 20px;
+    right: 20px;
+}
+
 /* Input container */
 .input-container {
     display: flex;
