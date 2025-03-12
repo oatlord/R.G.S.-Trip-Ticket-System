@@ -1,12 +1,17 @@
+const approvalButton = document.querySelector(".btn.approval");
+const purchaseOrdersButton = document.querySelector(".btn.purchase-order");
+const materialRequestsButton = document.querySelector(".btn.material-request");
+const fuelRequestsButton = document.querySelector(".btn.fuel-request");
+const tripTicketsButton = document.querySelector(".btn.trip-ticket-display");
+const contentDiv = document.querySelector(".content");
+
 function checkLogin() {
     let userID = document.getElementById("userID").value.toLowerCase();
     let password = document.getElementById("password").value;
 
     if (userID === "admin" && password === "123") {
-        // window.location.href = "material_requests.html"; 
         redirect('Admin View/material_requests.html');
     } else if (userID === "driver" && password === "345") {
-        // window.location.href = "trip_ticket_create.html";  
         redirect("Driver View/trip_ticket_create.html");
     } else {
         alert("Invalid ID or Password. Try again.");
@@ -19,20 +24,7 @@ function redirect(page) {
 
 //Button Functions
 document.addEventListener("DOMContentLoaded", () => {
-    const approvalButton = document.querySelector(".btn.approval");
-    const purchaseOrdersButton = document.querySelector(".btn.purchase-order");
-    const materialRequestsButton = document.querySelector(".btn.material-request");
-    const fuelRequestsButton = document.querySelector(".btn.fuel-request");
-    const tripTicketsButton = document.querySelector(".btn.trip-ticket-display");
-    const contentDiv = document.querySelector(".content");
-
-    if (approvalButton) {
-        contentDiv.style.display = "none";
-
-        approvalButton.addEventListener("click", () => {
-            contentDiv.style.display = "block";
-
-            fetch("http://localhost:3000/api/approvals")
+    fetch("http://localhost:3000/api/approvals")
                 .then(response => response.json())
                 .then(data => {
                     displayApprovals(data);
@@ -40,16 +32,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     approvalButton.disabled = true;
                 })
                 .catch(error => console.error("Error fetching approvals:", error));
-        });
-    }
+});
 
-    if (purchaseOrdersButton) {
-        contentDiv.style.display = "none";
+approvalButton.addEventListener("click", () => {
+    fetch("http://localhost:3000/api/approvals")
+                .then(response => response.json())
+                .then(data => {
+                    displayApprovals(data);
+                    approvalButton.classList.add("disabled");
+                    approvalButton.disabled = true;
+                })
+                .catch(error => console.error("Error fetching approvals:", error));
+})
 
-        purchaseOrdersButton.addEventListener("click", () => {
-            contentDiv.style.display = "block";
-
-            fetch("http://localhost:3000/api/purchase_orders")
+purchaseOrdersButton.addEventListener("click", () => {
+    fetch("http://localhost:3000/api/purchase_orders")
                 .then(response => response.json())
                 .then(data => {
                     displayPurchaseOrders(data);
@@ -57,16 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     purchaseOrdersButton.disabled = true;
                 })
                 .catch(error => console.error("Error fetching purchase orders:", error));
-        });
-    }
+})
 
-    if (materialRequestsButton) {
-        contentDiv.style.display = "none";
-
-        materialRequestsButton.addEventListener("click", () => {
-            contentDiv.style.display = "block";
-
-            fetch("http://localhost:3000/api/material_requests")
+materialRequestsButton.addEventListener("click", () => {
+    fetch("http://localhost:3000/api/material_requests")
                 .then(response => response.json())
                 .then(data => {
                     displayMaterialRequests(data);
@@ -74,16 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     materialRequestsButton.disabled = true;
                 })
                 .catch(error => console.error("Error fetching material requests:", error));
-        });
-    }
+})
 
-    if(fuelRequestsButton){
-        contentDiv.style.display = "none";
-
-        fuelRequestsButton.addEventListener("click", () => {
-            contentDiv.style.display = "block";
-
-            fetch("http://localhost:3000/api/fuel_requests")
+fuelRequestsButton.addEventListener("click", () => {
+    fetch("http://localhost:3000/api/fuel_requests")
                 .then(response => response.json())
                 .then(data => {
                     displayFuelRequests(data);
@@ -91,16 +76,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     fuelRequestsButton.disabled = true;
                 })
                 .catch(error => console.error("Error fetching fuel requests:", error));
-        });
-    }
-    
-    if(tripTicketsButton){
-        contentDiv.style.display = "none";
+})
 
-        tripTicketsButton.addEventListener("click", () => {
-            contentDiv.style.display = "block";
-
-            fetch("http://localhost:3000/api/trip_tickets")
+tripTicketsButton.addEventListener("click", () => {
+    fetch("http://localhost:3000/api/trip_tickets")
                 .then(response => response.json())
                 .then(data => {
                     displayTripTickets(data);
@@ -108,9 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     tripTicketsButton.disabled = true;
                 })
                 .catch(error => console.error("Error fetching trip tickets:", error));
-        });
-    }
-});
+})
 
 // Display the approvals table
 function displayApprovals(approvals) {
