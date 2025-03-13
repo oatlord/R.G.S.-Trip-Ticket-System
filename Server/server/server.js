@@ -11,7 +11,7 @@ const db = mysql.createConnection({
     user: "root",
     password: "", // Add your MySQL password if applicable
     database: "db_rg_salanatin",
-    port: 3307 
+    port: 3307
 });
 
 db.connect((err) => {
@@ -21,6 +21,10 @@ db.connect((err) => {
     }
     console.log("Connected to the database");
 });
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 // API to GET tbl_approval data
 app.get("/api/approvals", (req, res) => {
@@ -96,7 +100,7 @@ app.get("/api/fuel_requests", (req, res) => {
 
 //API to GET tbl_tripticket data
 app.get("/api/trip_tickets", (req, res) => {
-    const sql = "SELECT tripTicket_ID, admin_ID , time_IN, time_OUT, truck_licenseNumber, trip_date FROM tbl_tripticket";
+    const sql = "SELECT * FROM tbl_tripticket_request";
     db.query(sql, (err, results) => {
         if (err) {
             console.error("Error fetching trip tickets:", err);
@@ -107,7 +111,28 @@ app.get("/api/trip_tickets", (req, res) => {
     });
 });
 
+//API to POST tbl_tripticket data
+app.post("/api/trip_tickets", (req, res) => {
+    const { tripTicket_ID, driver_ID, employee_ID, truck_licenseNumber, jobsite_ID, trip_date } = req.body;
 
+    // Check if required fields are provided
+    if (!tripTicket_ID || !driver_ID || !employee_ID || !truck_licenseNumber || !jobsite_ID || !trip_date) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // SQL Query
+    const sql = `INSERT INTO tbl_tripticket_request (tripTicket_ID, driver_ID, employee_ID, truck_licenseNumber, jobsite_ID, trip_date) 
+                 VALUES (?, ?, ?, ?, ?, ?)`;
+    const values = [tripTicket_ID, driver_ID, employee_ID, truck_licenseNumber, jobsite_ID, trip_date];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error("Error inserting trip ticket:", err);
+            return res.status(500).json({ error: "Database error" });
+        }
+        res.status(201).json({ message: "Trip ticket request submitted successfully", id: result.insertId });
+    });
+});
 
 
 app.listen(3000, () => {

@@ -1,94 +1,3 @@
-const approvalButton = document.querySelector(".btn.approval");
-const purchaseOrdersButton = document.querySelector(".btn.purchase-order");
-const materialRequestsButton = document.querySelector(".btn.material-request");
-const fuelRequestsButton = document.querySelector(".btn.fuel-request");
-const tripTicketsButton = document.querySelector(".btn.trip-ticket-display");
-const contentDiv = document.querySelector(".content");
-
-function checkLogin() {
-    let userID = document.getElementById("userID").value.toLowerCase();
-    let password = document.getElementById("password").value;
-
-    if (userID === "admin" && password === "123") {
-        redirect('Admin View/material_requests.html');
-    } else if (userID === "driver" && password === "345") {
-        redirect("Driver View/trip_ticket_create.html");
-    } else {
-        alert("Invalid ID or Password. Try again.");
-    }
-}
-
-function redirect(page) {
-    window.location.href = page;
-}
-
-//Button Functions
-document.addEventListener("DOMContentLoaded", () => {
-    fetch("http://localhost:3000/api/approvals")
-                .then(response => response.json())
-                .then(data => {
-                    displayApprovals(data);
-                    approvalButton.classList.add("disabled");
-                    approvalButton.disabled = true;
-                })
-                .catch(error => console.error("Error fetching approvals:", error));
-});
-
-approvalButton.addEventListener("click", () => {
-    fetch("http://localhost:3000/api/approvals")
-                .then(response => response.json())
-                .then(data => {
-                    displayApprovals(data);
-                    approvalButton.classList.add("disabled");
-                    approvalButton.disabled = true;
-                })
-                .catch(error => console.error("Error fetching approvals:", error));
-})
-
-purchaseOrdersButton.addEventListener("click", () => {
-    fetch("http://localhost:3000/api/purchase_orders")
-                .then(response => response.json())
-                .then(data => {
-                    displayPurchaseOrders(data);
-                    purchaseOrdersButton.classList.add("disabled");
-                    purchaseOrdersButton.disabled = true;
-                })
-                .catch(error => console.error("Error fetching purchase orders:", error));
-})
-
-materialRequestsButton.addEventListener("click", () => {
-    fetch("http://localhost:3000/api/material_requests")
-                .then(response => response.json())
-                .then(data => {
-                    displayMaterialRequests(data);
-                    materialRequestsButton.classList.add("disabled");
-                    materialRequestsButton.disabled = true;
-                })
-                .catch(error => console.error("Error fetching material requests:", error));
-})
-
-fuelRequestsButton.addEventListener("click", () => {
-    fetch("http://localhost:3000/api/fuel_requests")
-                .then(response => response.json())
-                .then(data => {
-                    displayFuelRequests(data);
-                    fuelRequestsButton.classList.add("disabled");
-                    fuelRequestsButton.disabled = true;
-                })
-                .catch(error => console.error("Error fetching fuel requests:", error));
-})
-
-tripTicketsButton.addEventListener("click", () => {
-    fetch("http://localhost:3000/api/trip_tickets")
-                .then(response => response.json())
-                .then(data => {
-                    displayTripTickets(data);
-                    tripTicketsButton.classList.add("disabled");
-                    tripTicketsButton.disabled = true;
-                })
-                .catch(error => console.error("Error fetching trip tickets:", error));
-})
-
 // Display the approvals table
 function displayApprovals(approvals) {
     let contentDiv = document.querySelector(".content");
@@ -214,10 +123,10 @@ function displayTripTickets(tripTickets) {
         <table>
             <tr>
                 <th>Trip Ticket ID</th>
-                <th>Admin ID</th>
-                <th>Time IN</th>
-                <th>Time OUT</th>
+                <th>Driver ID</th>
+                <th>Employee ID</th>
                 <th>Truck License Number</th>
+                <th>Jobsite ID</th>
                 <th>Trip Date</th>
             </tr>`;
 
@@ -225,10 +134,10 @@ function displayTripTickets(tripTickets) {
         tableHTML += `
             <tr>
                 <td>${tripTicket.tripTicket_ID}</td>
-                <td>${tripTicket.admin_ID}</td>
-                <td>${new Date(tripTicket.time_IN).toLocaleString()}</td>
-                <td>${new Date(tripTicket.time_OUT).toLocaleString()}</td>
+                <td>${tripTicket.driver_ID}</td>
+                <td>${tripTicket.employee_ID}</td>
                 <td>${tripTicket.truck_licenseNumber}</td>
+                <td>${tripTicket.jobsite_ID}</td>
                 <td>${new Date(tripTicket.trip_date).toLocaleString()}</td>
             </tr>`;
     });
@@ -237,7 +146,142 @@ function displayTripTickets(tripTickets) {
     tripTicketsTable.innerHTML = tableHTML;
 }   
 
+
+
+//Login Check Function
+function checkLogin() {
+    let userID = document.getElementById("userID").value;
+    let password = document.getElementById("password").value;
+
+    fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userID, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.role === "admin") {
+                window.location.href = "Admin View/material_requests.html";
+            } else if (data.role === "driver") {
+                window.location.href = "Driver View/trip_ticket_create.html";
+            }
+        } else {
+            alert("Invalid ID or Password. Try again.");
+        }
+    })
+    .catch(error => console.error("Error logging in:", error));
+}
+
+//Redirect to the page
+function redirect(page) {
+    window.location.href = page;
+}
+
+
+//Event Listeners
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelector(".btn.approval")?.addEventListener("click", (event) => {
+        fetch("http://localhost:3000/api/approvals")
+            .then(response => response.json())
+            .then(data => {
+                displayApprovals(data);
+                event.target.classList.toggle("disabled");
+            })
+            .catch(error => console.error("Error fetching approvals:", error));
+    });
+
+    document.querySelector(".btn.purchase-order")?.addEventListener("click", () => {
+        fetch("http://localhost:3000/api/purchase_orders")
+            .then(response => response.json())
+            .then(data => {
+                displayPurchaseOrders(data);
+                const purchaseOrdersButton = document.querySelector(".btn.purchase-order");
+                purchaseOrdersButton.classList.add("disabled");
+                purchaseOrdersButton.disabled = true;
+            })
+            .catch(error => console.error("Error fetching purchase orders:", error));
+    });
+
+    document.querySelector(".btn.material-request")?.addEventListener("click", () => {
+        fetch("http://localhost:3000/api/material_requests")
+            .then(response => response.json())
+            .then(data => {
+                displayMaterialRequests(data);
+                const materialRequestsButton = document.querySelector(".btn.material-request");
+                materialRequestsButton.classList.add("disabled");
+                materialRequestsButton.disabled = true;
+            })
+            .catch(error => console.error("Error fetching material requests:", error));
+    });
+
+    document.querySelector(".btn.fuel-request")?.addEventListener("click", () => {
+        fetch("http://localhost:3000/api/fuel_requests")
+            .then(response => response.json())
+            .then(data => {
+                displayFuelRequests(data);
+                const fuelRequestsButton = document.querySelector(".btn.fuel-request");
+                fuelRequestsButton.classList.add("disabled");
+                fuelRequestsButton.disabled = true;
+            })
+            .catch(error => console.error("Error fetching fuel requests:", error));
+    });
+
+    document.querySelector(".btn.trip-ticket")?.addEventListener("click", () => {
+        fetch("http://localhost:3000/api/trip_tickets")
+            .then(response => response.json())
+            .then(data => {
+                displayTripTickets(data);
+                const tripTicketsButton = document.querySelector(".btn.trip-ticket");
+                tripTicketsButton.classList.add("disabled");
+                tripTicketsButton.disabled = true;
+            })
+            .catch(error => console.error("Error fetching trip tickets:", error));
+    });
+});
+
+//Trip Ticket Confirmation
+document.getElementById("tripTicketForm").addEventListener("submit", async function (event) {
+    event.preventDefault(); 
+    
+    const isConfirmed = confirm("Are you sure you want to create this trip ticket?");
+    
+    if (!isConfirmed) {
+        return; 
+    }
+
+    // Collect form data
+    const formData = {
+        tripTicket_ID: document.getElementById("ticketIdInput").value,
+        driver_ID: document.getElementById("driverIdInput").value,
+        employee_ID: document.getElementById("employeeIdInput").value,
+        truck_licenseNumber: document.getElementById("licenseNoInput").value,
+        jobsite_ID: document.getElementById("jobsiteIdInput").value,
+        trip_date: document.getElementById("dateInput").value
+    };
+
+    try {
+        const response = await fetch("http://localhost:3000/api/trip_tickets", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert("Trip ticket added successfully!"); 
+            document.getElementById("tripTicketForm").reset(); 
+        } else {
+            alert("Error: " + result.error); // Error pop-up
+        }
+    } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("Failed to submit trip ticket.");
+    }
+});
+
+
 //end of script.js
-
-
-

@@ -11,20 +11,34 @@
     <div class="container">
         <h1>TRIP TICKET CREATION</h1>
 
-        <div class="input-container">
-            <input id="ticketIdInput" type="text" placeholder="Ticket ID">
-            <input id="driverIdInput" type="text" placeholder="Driver ID">
-            <input id="employeeIdInput" type="text" placeholder="Accompanying Employee ID">
-            <input id="dateInput" type="text" placeholder="Trip Date">
-            <input id="licenseNoInput" type="text" placeholder="Truck License Number">
-            <input id="jobsiteIdInput" type="text" placeholder="Jobsite ID input">
-        </div>
+        <form id="tripTicketForm">
+            <div class="input-container">
+                <label for="ticketIdInput">Trip Ticket ID</label>
+                <input id="ticketIdInput" name="ticketId" type="number" placeholder="Enter Trip Ticket ID" required>
+                
+                <label for="driverIdInput">Driver ID</label>
+                <input id="driverIdInput" name="driverId" type="number" placeholder="Enter Driver ID" required>
+                
+                <label for="employeeIdInput">Employee ID</label>
+                <input id="employeeIdInput" name="employeeId" type="number" placeholder="Enter Employee ID" required>
+                
+                <label for="licenseNoInput">Truck License Number</label>
+                <input id="licenseNoInput" name="truckLicense" type="text" placeholder="Enter Truck License Number" maxlength="6" required>
+                
+                <label for="jobsiteIdInput">Jobsite ID</label>
+                <input id="jobsiteIdInput" name="jobsiteId" type="number" placeholder="Enter Jobsite ID" required>
+                
+                <label for="dateInput">Trip Date</label>
+                <input id="dateInput" name="tripDate" type="date" required>
+            </div>
 
-        <div class="action-buttons">
-            <button class="btn">Confirm</button>
-            <button class="btn">Cancel</button>
-        </div>
+            <div class="action-buttons">
+                <button type="submit" class="btn trip-confirm">Confirm</button>
+                <button type="reset" class="btn trip-cancel">Cancel</button>
+            </div>
+        </form>
     </div>
 
+    <script src="/script.js"></script>
 </body>
 </html>
