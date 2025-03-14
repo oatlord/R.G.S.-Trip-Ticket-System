@@ -64,9 +64,10 @@ function displayMaterialRequests(materialRequests) {
     let tableHTML = `
         <table>
             <tr>
+                <th>Select</th>
                 <th>Material Request ID</th>
                 <th>Material Request Date</th>
-                <th>Material Request Status</th>
+                <th>Status</th>
                 <th>Jobsite ID</th>
                 <th>Employee ID</th>
             </tr>`;
@@ -74,6 +75,7 @@ function displayMaterialRequests(materialRequests) {
     materialRequests.forEach(materialRequest => {
         tableHTML += `
             <tr>
+                <td><input type="radio" name="selectedRequest" value="${materialRequest.materialReq_ID}"></td>
                 <td>${materialRequest.materialReq_ID}</td>
                 <td>${new Date(materialRequest.materialReq_date).toLocaleString()}</td>
                 <td>${materialRequest.materialReq_status}</td>
@@ -146,6 +148,30 @@ function displayTripTickets(tripTickets) {
     tripTicketsTable.innerHTML = tableHTML;
 }   
 
+//Approval / Decline for Material Request
+function updateRequestStatus(status) {
+    const selectedRequest = document.querySelector('input[name="selectedRequest"]:checked');
+    if (!selectedRequest) {
+        alert("Please select a material request first.");
+        return;
+    }
+
+    const requestId = selectedRequest.value;
+
+    fetch(`http://localhost:3000/api/material_requests/${requestId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ approval_status: status })
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            location.reload();
+        })
+        .catch(error => console.error("Error updating request:", error));
+}
+
+
 //Redirect to the page
 function redirect(page) {
     window.location.href = page;
@@ -172,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const requestData = {
                 tripTicket_ID,
-                driver_ID,
+                driver_ID,  
                 employee_ID,
                 truck_licenseNumber,
                 jobsite_ID,
@@ -278,6 +304,11 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(error => console.error("Error fetching trip tickets:", error));
     });
+
+    //Approve or Decline Material Request
+    document.querySelector(".btn.material-approve")?.addEventListener("click", () => updateRequestStatus(1));
+    document.querySelector(".btn.material-decline")?.addEventListener("click", () => updateRequestStatus(2));
+
 });
 
 

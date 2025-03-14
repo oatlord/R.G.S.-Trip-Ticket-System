@@ -88,6 +88,25 @@ app.get("/api/approvals", (req, res) => {
     });
 });
 
+//API to PUT tbl_materialrequest data
+app.put("/api/material_requests/:id", (req, res) => {
+    const { id } = req.params;
+    const { approval_status } = req.body;
+
+    if (![1, 2].includes(approval_status)) {
+        return res.status(400).json({ error: "Invalid status value" });
+    }
+
+    const sql = "UPDATE tbl_materialrequest SET approval_status = ? WHERE materialReq_ID = ?";
+    db.query(sql, [approval_status, id], (err, result) => {
+        if (err) {
+            console.error("Error updating material request:", err);
+            return res.status(500).json({ error: "Database error" });
+        }
+        res.json({ message: "Material request updated successfully" });
+    });
+});
+
 // API to POST tbl_approval data
 app.post("/api/approvals", (req, res) => {
     const { admin_ID, approval_ID, approval_date, approval_remarks, request_type } = req.body;
