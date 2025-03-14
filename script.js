@@ -155,6 +155,84 @@ function redirect(page) {
 
 //Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM fully loaded");
+
+    // 🔹 Trip Ticket Form Submission
+    const tripTicketForm = document.getElementById("tripTicketForm");
+    if (tripTicketForm) {
+        tripTicketForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const tripTicket_ID = document.getElementById("ticketIdInput").value;
+            const driver_ID = document.getElementById("driverIdInput").value;
+            const employee_ID = document.getElementById("employeeIdInput").value;
+            const truck_licenseNumber = document.getElementById("licenseNoInput").value;
+            const jobsite_ID = document.getElementById("jobsiteIdInput").value;
+            const trip_date = document.getElementById("dateInput").value;
+
+            const requestData = {
+                tripTicket_ID,
+                driver_ID,
+                employee_ID,
+                truck_licenseNumber,
+                jobsite_ID,
+                trip_date
+            };
+
+            try {
+                const response = await fetch("http://localhost:3000/api/trip_tickets", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(requestData)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Trip ticket submitted successfully!");
+                    tripTicketForm.reset();
+                } else {
+                    alert("Error: " + result.error);
+                }
+            } catch (error) {
+                console.error("Error submitting form:", error);
+                alert("Failed to submit trip ticket.");
+            }
+        });
+    } else {
+        console.error("Trip ticket form not found!");
+    }
+
+    // 🔹 Login Form Submission
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+        loginForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            let userID = document.getElementById("userID").value;
+            let password = document.getElementById("password").value;
+
+            fetch("http://localhost:3000/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userID, password })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.userType === "admin") {
+                            window.location.href = "Admin View/material_requests.html";
+                        } else if (data.userType === "driver") {
+                            window.location.href = "Driver View/trip_ticket_create.html";
+                        }
+                    } else {
+                        alert("Invalid ID or Password. Try again.");
+                    }
+                })
+                .catch(error => console.error("Error logging in:", error));
+        });
+    }
+
+    // 🔹 Event Listeners for Buttons
     document.querySelector(".btn.approval")?.addEventListener("click", (event) => {
         fetch("http://localhost:3000/api/approvals")
             .then(response => response.json())
@@ -202,75 +280,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//Login Check Function
-document.getElementById("loginForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent form submission reload
-
-    let userID = document.getElementById("userID").value;
-    let password = document.getElementById("password").value;
-
-    fetch("http://localhost:3000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userID, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            if (data.userType === "admin") {
-                window.location.href = "Admin View/material_requests.html";
-            } else if (data.userType === "driver") {
-                window.location.href = "Driver View/trip_ticket_create.html";
-            }
-        } else {
-            alert("Invalid ID or Password. Try again.");
-        }
-    })
-    .catch(error => console.error("Error logging in:", error));
-});
-
-//Trip Ticket Confirmation
-document.getElementById("tripTicketForm").addEventListener("submit", async function (event) {
-    event.preventDefault(); 
-    
-    const isConfirmed = confirm("Are you sure you want to create this trip ticket?");
-    
-    if (!isConfirmed) {
-        return; 
-    }
-
-    // Collect form data
-    const formData = {
-        tripTicket_ID: document.getElementById("ticketIdInput").value,
-        driver_ID: document.getElementById("driverIdInput").value,
-        employee_ID: document.getElementById("employeeIdInput").value,
-        truck_licenseNumber: document.getElementById("licenseNoInput").value,
-        jobsite_ID: document.getElementById("jobsiteIdInput").value,
-        trip_date: document.getElementById("dateInput").value
-    };
-
-    try {
-        const response = await fetch("http://localhost:3000/api/trip_tickets", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-        });
-
-        const result = await response.json();
-        
-        if (response.ok) {
-            alert("Trip ticket added successfully!"); 
-            document.getElementById("tripTicketForm").reset(); 
-        } else {
-            alert("Error: " + result.error); // Error pop-up
-        }
-    } catch (error) {
-        console.error("Error submitting form:", error);
-        alert("Failed to submit trip ticket.");
-    }
-});
 
 
 //end of script.js

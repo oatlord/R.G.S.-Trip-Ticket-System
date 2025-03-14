@@ -6,12 +6,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
+
+// un comment /* */ for remote connection 
+/*const db = mysql.createConnection({
     host: "sql.freedb.tech", // Ensure MySQL is running on this host
     user: "freedb_cjong",
     password: "&@7WcCEYHUvbBa5", // Add your MySQL password if applicable
     database: "freedb_db_salanatin_remote",
     port: 3306
+});*/
+
+//local connection
+const db = mysql.createConnection({
+    host: "localhost", // Ensure MySQL is running on this host
+    user: "root",
+    password: "", // Add your MySQL password if applicable
+    database: "db_rg_salanatin",
+    port: 3307
 });
 
 db.connect((err) => {
