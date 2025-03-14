@@ -1,3 +1,5 @@
+This is a trip ticket management system that allows users (drivers) to create trip tickets and for administrators to quickly approve them. 
+
 To run the web application, first download all the files including the .sql and Node.js. 
 
 **Installing Node.js**
