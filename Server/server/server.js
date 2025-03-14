@@ -1,5 +1,5 @@
 const express = require("express");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const cors = require("cors");
 
 const app = express();
@@ -7,11 +7,11 @@ app.use(cors());
 app.use(express.json());
 
 const db = mysql.createConnection({
-    host: "localhost", // Ensure MySQL is running on this host
-    user: "root",
-    password: "", // Add your MySQL password if applicable
-    database: "db_rg_salanatin",
-    port: 3307
+    host: "sql.freedb.tech", // Ensure MySQL is running on this host
+    user: "freedb_cjong",
+    password: "&@7WcCEYHUvbBa5", // Add your MySQL password if applicable
+    database: "freedb_db_salanatin_remote",
+    port: 3306
 });
 
 db.connect((err) => {
@@ -24,6 +24,44 @@ db.connect((err) => {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+// Login API
+app.post("/api/login", (req, res) => {
+    const { userID, password } = req.body;
+
+    if (!userID || !password) {
+        return res.status(400).json({ success: false, message: "Missing credentials" });
+    }
+
+    // Check Admin Table
+    const adminQuery = "SELECT * FROM tbl_admin WHERE admin_ID = ? AND admin_password = ?";
+    db.query(adminQuery, [userID, password], (err, adminResults) => {
+        if (err) {
+            console.error("Error checking admin login:", err);
+            return res.status(500).json({ success: false, message: "Database error" });
+        }
+
+        if (adminResults.length > 0) {
+            return res.json({ success: true, userType: "admin" });
+        }
+
+        // If not an admin, check Driver Table
+        const driverQuery = "SELECT * FROM tbl_driver WHERE driver_ID = ? AND driver_password = ?";
+        db.query(driverQuery, [userID, password], (err, driverResults) => {
+            if (err) {
+                console.error("Error checking driver login:", err);
+                return res.status(500).json({ success: false, message: "Database error" });
+            }
+
+            if (driverResults.length > 0) {
+                return res.json({ success: true, userType: "driver" });
+            } else {
+                return res.json({ success: false, message: "Invalid credentials" });
+            }
+        });
+    });
+});
 
 
 // API to GET tbl_approval data
@@ -85,18 +123,6 @@ app.get("/api/material_requests", (req, res) => {
     });
 });
 
-//API to GET tbl_fuelrequest data
-app.get("/api/fuel_requests", (req, res) => {
-    const sql = "SELECT fuelReq_ID, tripTicket_ID, fuelReq_amount, fuelReq_pricePerLiter, fuel_type FROM tbl_fuelrequest";
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error("Error fetching fuel requests:", err);
-            res.status(500).json({ error: "Database error" });
-        } else {
-            res.json(results);
-        }
-    });
-});
 
 //API to GET tbl_tripticket data
 app.get("/api/trip_tickets", (req, res) => {

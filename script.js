@@ -146,37 +146,11 @@ function displayTripTickets(tripTickets) {
     tripTicketsTable.innerHTML = tableHTML;
 }   
 
-
-
-//Login Check Function
-function checkLogin() {
-    let userID = document.getElementById("userID").value;
-    let password = document.getElementById("password").value;
-
-    fetch("http://localhost:3000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userID, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            if (data.role === "admin") {
-                window.location.href = "Admin View/material_requests.html";
-            } else if (data.role === "driver") {
-                window.location.href = "Driver View/trip_ticket_create.html";
-            }
-        } else {
-            alert("Invalid ID or Password. Try again.");
-        }
-    })
-    .catch(error => console.error("Error logging in:", error));
-}
-
 //Redirect to the page
 function redirect(page) {
     window.location.href = page;
 }
+
 
 
 //Event Listeners
@@ -215,18 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => console.error("Error fetching material requests:", error));
     });
 
-    document.querySelector(".btn.fuel-request")?.addEventListener("click", () => {
-        fetch("http://localhost:3000/api/fuel_requests")
-            .then(response => response.json())
-            .then(data => {
-                displayFuelRequests(data);
-                const fuelRequestsButton = document.querySelector(".btn.fuel-request");
-                fuelRequestsButton.classList.add("disabled");
-                fuelRequestsButton.disabled = true;
-            })
-            .catch(error => console.error("Error fetching fuel requests:", error));
-    });
-
     document.querySelector(".btn.trip-ticket")?.addEventListener("click", () => {
         fetch("http://localhost:3000/api/trip_tickets")
             .then(response => response.json())
@@ -238,6 +200,33 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(error => console.error("Error fetching trip tickets:", error));
     });
+});
+
+//Login Check Function
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent form submission reload
+
+    let userID = document.getElementById("userID").value;
+    let password = document.getElementById("password").value;
+
+    fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userID, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.userType === "admin") {
+                window.location.href = "Admin View/material_requests.html";
+            } else if (data.userType === "driver") {
+                window.location.href = "Driver View/trip_ticket_create.html";
+            }
+        } else {
+            alert("Invalid ID or Password. Try again.");
+        }
+    })
+    .catch(error => console.error("Error logging in:", error));
 });
 
 //Trip Ticket Confirmation
