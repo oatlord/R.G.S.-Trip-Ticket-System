@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 
-// un comment /* */ for remote connection 
+// un comment /* */ for remote connection to freedb
 /*const db = mysql.createConnection({
     host: "sql.freedb.tech", // Ensure MySQL is running on this host
     user: "freedb_cjong",
