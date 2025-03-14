@@ -74,6 +74,17 @@ app.post("/api/login", (req, res) => {
     });
 });
 
+//Logout API
+app.post('/api/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ message: "Logout failed" });
+        }
+        res.clearCookie("session_id"); // Clear session cookie
+        res.json({ message: "Logout successful" });
+    });
+});
+
 
 // API to GET tbl_approval data
 app.get("/api/approvals", (req, res) => {
@@ -87,6 +98,21 @@ app.get("/api/approvals", (req, res) => {
         }
     });
 });
+
+//API to Approve or Decline Approvals
+app.post("/api/updateApproval", (req, res) => {
+    const { approval_ID, approval_remarks } = req.body;
+
+    db.query(
+        "UPDATE tbl_approval SET approval_remarks = ? WHERE approval_ID = ?",
+        [approval_remarks, approval_ID],
+        (err, result) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: "Approval status updated successfully" });
+        }
+    );
+});
+
 
 //API to PUT tbl_materialrequest data
 app.put("/api/material_requests/:id", (req, res) => {

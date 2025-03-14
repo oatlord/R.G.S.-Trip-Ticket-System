@@ -1,29 +1,84 @@
 // Display the approvals table
 function displayApprovals(approvals) {
     let contentDiv = document.querySelector(".content");
+    
+    if (!approvals.length) {
+        contentDiv.innerHTML = "<p>No approval requests available.</p>";
+        return;
+    }
+
     let tableHTML = `
         <table>
-            <tr>
-                <th>Admin ID</th>
-                <th>Approval ID</th>
-                <th>Approval Date</th>
-                <th>Approval Remarks</th>
-                <th>Request Type</th>
-            </tr>`;
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Admin ID</th>
+                    <th>Approval ID</th>
+                    <th>Approval Date</th>
+                    <th>Request Type</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>`;
 
     approvals.forEach(approval => {
         tableHTML += `
             <tr>
+                <td>
+                    <input type="radio" name="approvalSelect" value="${approval.approval_ID}">
+                </td>
                 <td>${approval.admin_ID}</td>
                 <td>${approval.approval_ID}</td>
                 <td>${new Date(approval.approval_date).toLocaleString()}</td>
-                <td>${approval.approval_remarks || "N/A"}</td>
                 <td>${approval.request_type}</td>
+                <td>${approval.approval_remarks === 1 ? "Approved" : approval.approval_remarks === 2 ? "Declined" : "Pending"}</td>
             </tr>`;
     });
 
-    tableHTML += `</table>`;
     contentDiv.innerHTML = tableHTML;
+
+    // Attach event listeners for approval actions
+    document.querySelector(".btn.approval-approve").addEventListener("click", () => updateApprovalStatus(1));
+    document.querySelector(".btn.approval-decline").addEventListener("click", () => updateApprovalStatus(2));
+}
+
+
+// Update approval status
+function updateApprovalStatus(status) {
+    const selectedApproval = document.querySelector('input[name="approvalSelect"]:checked');
+    
+    if (!selectedApproval) {
+        alert("Please select an approval request first.");
+        return;
+    }
+
+    const approval_ID = selectedApproval.value;
+
+    fetch("http://localhost:3000/api/updateApprovalStatus", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ approval_ID, approval_remarks: status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        location.reload();
+    })
+    .catch(error => console.error("Error updating approval status:", error));
+}
+//Submit approvals
+function submitApprovals() {
+    const approvalRows = document.querySelectorAll("input[type='radio']:checked");
+
+    if (approvalRows.length === 0) {
+        alert("No approvals selected.");
+        return;
+    }
+
+    approvalRows.forEach(radio => {
+        const approval_ID = radio.name.split("_")[1];
+        updateApprovalStatus(approval_ID);
+    });
 }
 
 //Display the purchase orders table
@@ -177,7 +232,12 @@ function redirect(page) {
     window.location.href = page;
 }
 
-
+//Logout Function
+function logout() {
+    localStorage.removeItem("driver_id");
+    localStorage.removeItem("driver_password");
+    window.location.href = "login.html"; // Redirect to login page
+}
 
 //Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
@@ -308,6 +368,31 @@ document.addEventListener("DOMContentLoaded", () => {
     //Approve or Decline Material Request
     document.querySelector(".btn.material-approve")?.addEventListener("click", () => updateRequestStatus(1));
     document.querySelector(".btn.material-decline")?.addEventListener("click", () => updateRequestStatus(2));
+
+    document.getElementById("logoutButton")?.addEventListener("click", logout);
+    document.getElementById("cancelButton")?.addEventListener("click", logout);
+
+    document.getElementById("logoutButton").addEventListener("click", function (event) {
+        event.preventDefault(); // Prevents form submission if inside a form
+    
+        // Clear session storage or any authentication tokens
+        sessionStorage.clear(); // Optional: Clear any stored session data
+    
+        // Redirect to the correct login page
+        window.location.href = "http://127.0.0.1:5500/login.html"; 
+    });
+
+    document.getElementById("cancelButton").addEventListener("click", function (event) {
+        event.preventDefault(); 
+    
+        sessionStorage.clear(); 
+    
+        window.location.href = "http://127.0.0.1:5500/login.html"; 
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchApprovalRequests();
+    });
 
 });
 

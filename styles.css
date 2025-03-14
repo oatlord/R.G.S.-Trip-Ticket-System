@@ -37,6 +37,26 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* Logout button */
+.btn.logout {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #222;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    border-radius: 5px;
+}
+
+.logout-btn:hover {
+    background-color: #444;
+    transform: scale(1.05);
+}
+
 .btn {
     background-color: #222;
     color: white;

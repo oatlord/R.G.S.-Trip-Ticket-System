@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Approval</title>
     <link rel="stylesheet" href="/styles.css">
-    
 </head>
 <body>
 
@@ -16,13 +15,21 @@
             <button class="btn" onclick="redirect('purchase_orders.html')">Purchase Orders</button>
             <button class="btn" onclick="redirect('material_requests.html')">Material Requests</button>
             <button class="btn" onclick="redirect('trip_tickets.html')">Trip Tickets</button>
+            <button type="button" id="logoutButton" class="btn logout">Logout</button>
         </div>
 
-        <input class="searchBar" type="text" placeholder="Search...">
+        <input class="searchBar" type="text" id="searchInput" placeholder="Search..." onkeyup="searchTable()">
 
         <div class="content">
-            <div id="approvalTable"></div>
+            <div id="approvalTable">
+            </div>
         </div>
+
+        <div class="admin-actions">
+            <button class="btn approval-approve" onclick="updateApprovalStatus(1)">Approve</button>
+            <button class="btn approval-decline" onclick="updateApprovalStatus(2)">Decline</button>
+        </div>
+
     </div>
     <script src="/script.js"></script>
 </body>
