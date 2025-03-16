@@ -34,7 +34,7 @@ _**Oh phpMyAdmin:**_
 When creating the database on XAMPP Command Line, you can either Import it through the steps in the _"on phpMyAdmin"_ section, but simply exclude Step 2 since the database is already created.
 If you would like to do it through Windows command line, do the following steps:
   1. Open Windows command line and redirect the directory to xampp/bin/mysql. Type "cd [drive]\xampp\bin\mysql".
-  2. Type the command "mysql -u root -p [your created database] < db_rg_salanatin-1.sql". This should import all the data into your local database.
+  2. Type the command "mysql -u root -p [your created database] < db_rg_salanatin-lite.sql". This should import all the data into your local database.
 
 Now that you have the database, it's time to connect it to the web application through Node.js.
   1. Open the project through your chosen code editor.
